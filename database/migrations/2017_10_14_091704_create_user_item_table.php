@@ -15,11 +15,11 @@ class CreateUserItemTable extends Migration
     {
         Schema::create('user_item', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('userId')->unsigned();
+            $table->string('userId');
             $table->unsignedInteger('itemId');
 
             $table->foreign('userId')
-                ->references('id')->on('users');
+                ->references('personId')->on('users');
             $table->foreign('itemId')
                 ->references('id')->on('items');
             $table->timestamps();
