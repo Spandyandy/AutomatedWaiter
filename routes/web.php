@@ -17,4 +17,5 @@ Route::get('/', function () {
 
 Route::get('/api/getPerson', function () {
 
+    return view('welcome');
 });
