@@ -7,113 +7,102 @@
 <body>
 
 <script type="text/javascript">
-    var subscriptionKey = "dc19f1be9e0c405abee841815bca1aa7";
+    var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
     var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
-    var imageUrl = "http://www.goldenglobes.com/sites/default/files/styles/portrait_medium/public/people/cover_images/leonardo_dicaprio-gt.jpg?itok=uZBLZv3X";
+    var imageUrl = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg";
     var personGroupId = "person_group";
     function processImage() {
-        createPersonGroup();
         var faceId = getFaceId('detect', imageUrl),
             faceIds = [];
+        console.log(faceId);
         if(faceId === null) {
             // bad stuff with api call
         } else {
             faceIds.push(faceId);
         }
-        // Call API to check if we have seen this person
         var personId = null,
             personData = null;
+        //todo Call API to check if we have seen this person
+        personId = getPersonId('identify',faceId);
         if(!personId) {
             // Ask person for there name ....
-            var name = "Daniel Evans";
+            var name = "Obama";
             var personData = createPerson(name);
+            console.log("Final: " + personData);
         }
-        //personId = personData.personId;
+        else {
 
-    };
+        }
+    }
+
+    function getPersonId(api, faceId) {
+        var baseUri = uriBase + api;
+        $.ajax({
+            async: false,
+            url: baseUri,
+            beforeSend: function(xhrObj) {
+                xhrObj.setRequestHeader("Content-Type", "application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+            },
+            type: "POST",
+            data: JSON.stringify({
+                faceIds: [faceId],
+                maxNumOfCandidatesReturned: 1,
+                confidenceThreshold: 0.5
+            })
+        }).done(function(data) {
+            console.log(" Gocha"+data);
+        })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                return null;
+            });
+    }
 
     function getFaceId(api, faceUrl) {
         var baseUri = uriBase + api;
         var params = {
             returnFaceId: "true"
         };
+        var faceid = -1;
         $.ajax({
+            async: false,
             url: baseUri + "?" + $.param(params),
             beforeSend: function(xhrObj){
                 xhrObj.setRequestHeader("Content-Type","application/json");
                 xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
             },
             type: "POST",
-            data: '{"url": ' + '"' + faceUrl + '"}',
+            data: '{"url": ' + '"' + faceUrl + '"}'
         })
             .done(function(data) {
-                return data.faceId;
+                console.log(data);
+                faceid = data[0].faceId;
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
-                return null;
+                console.log("Failed", textStatus);
             });
-    }
-
-    function createPersonGroup() {
-        var api = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/persongroups/person_group';
-        $.ajax({
-            url: api,
-            beforeSend: function(xhrObj){
-                xhrObj.setRequestHeader("Content-Type","application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-            },
-            type: "PUT"
-        })
-            .done(function(data) {
-                console.log('person group created (success)')
-            })
-            .fail(function(errorThrown) {
-                console.log(errorThrown);
-            });
+            return faceid;
     }
 
     function createPerson(nameOfPerson) {
-        var api = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/persongroups/' + personGroupId + '/persons';
+        var api = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/persongroups/person_group/persons';
+
         $.ajax({
+            async: false,
             url: api,
             beforeSend: function(xhrObj){
                 xhrObj.setRequestHeader("Content-Type","application/json");
                 xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
             },
             type: "POST",
-            data: {
+            data: JSON.stringify({
                 name: nameOfPerson
-            }
-        })
-            .done(function(data) {
+            })
+        }).done(function(data) {
                 console.log(data);
             })
             .fail(function(errorThrown) {
                 console.log(errorThrown);
-            });
-    }
-
-    function createPerson(name, faceIds) {
-        var params = {
-            faceIds: faceIds,
-            personGroupId: personGroupId
-        };
-        $.ajax({
-            url: uriBase + "?" + $.param(params),
-            beforeSend: function(xhrObj){
-                xhrObj.setRequestHeader("Content-Type","application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-            },
-            type: "POST",
-            data: {
-                name: name
-            }
-        })
-            .done(function(data) {
-                console.log(data);
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                // Fuck something went wrong :(
             });
     }
 </script>
