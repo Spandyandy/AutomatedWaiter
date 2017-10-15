@@ -3,21 +3,61 @@ var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
 var imageUrl = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg";
 var personGroupId = "automated-waiter-group-id";
 var cloudinaryName = 'drauibq1c',
-    cloudinaryImageUploadUrl = 'https://api.cloudinary.com/v1_1/'+ cloudinaryName +'/image/upload',
+    cloudinaryImageUploadUrl = 'https://api.cloudinary.com/v1_1/' + cloudinaryName + '/image/upload',
     cloudinaryUploadKey = '925295814447944';
+
+//training URL's
+var grelda = "Grelda";
+var grelda1 = "https://github.com/Microsoft/Cognitive-Face-Windows/blob/master/Data/PersonGroup/Family2-Lady/Family2-Lady1.jpg";
+var grelda2 = "https://github.com/Microsoft/Cognitive-Face-Windows/blob/master/Data/PersonGroup/Family2-Lady/Family2-Lady2.jpg";
+var grelda3 = "https://github.com/Microsoft/Cognitive-Face-Windows/blob/master/Data/PersonGroup/Family2-Lady/Family2-Lady3.jpg";
+var tom = "Tom";
+var tom1 = "https://github.com/Microsoft/Cognitive-Face-Windows/blob/master/Data/PersonGroup/Family2-Man/Family2-Man1.jpg";
+var tom2 = "https://github.com/Microsoft/Cognitive-Face-Windows/blob/master/Data/PersonGroup/Family2-Man/Family2-Man2.jpg";
 
 
 (function () {
-    // https://upload.wikimedia.org/wikipedia/commons/2/21/Leonardo_DiCaprio_October_2016.jpg
+
+    //createPersonGroup();
+    //createTrainingPersons();
+    //trainPersonGroup(personGroupId);
+    console.log('sdlkfjdslkfj');
     uploadToCloudinary('');
 })();
+
+function createTrainingPersons() {
+    var a = createPerson(grelda);
+    console.log(a);
+    addFace(grelda1, a.personId);
+    addFace(grelda2, a.personId);
+    addFace(grelda3, a.personId);
+
+    var b = createPerson(tom);
+    console.log(b, a);
+    addFace(tom1, b.personId);
+    addFace(tom2, b.personId);
+    addFace(tom3, b.personId);
+}
+
+function trainPersonGroup(personGroupId) {
+
+    $.ajax({
+        async: false,
+        url: uriBase + 'persongroups/' + personGroupId + '/train',
+        beforeSend: function (xhrObj) {
+            xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+        },
+        type: 'POST',
+    })
+}
+
 
 /*
  file - The file to upload. Can be the actual data (byte array buffer), the Data URI (Base64 encoded), a remote FTP, HTTP or HTTPS URL of an existing file, or an S3 URL (of a whitelisted bucket).
  api_key - The unique API Key of your Cloudinary account.
  timestamp - Unix time in seconds of the current time (e.g., 1315060076).
  signature - A signature of all request parameters including the 'timestamp' parameter but excluding the 'api_key' and 'file' parameters, based on the API Secret of your Cloudinary account. The signature is valid for 1 hour. See Creating API authentication signatures for more details.
-// https://api.cloudinary.com/v1_1/<cloud name>/<resource_type>/upload
+ // https://api.cloudinary.com/v1_1/<cloud name>/<resource_type>/upload
  */
 function uploadToCloudinary(file) {
     $.ajax({
@@ -33,30 +73,6 @@ function uploadToCloudinary(file) {
     }).done(function (data) {
         console.log('success');
     })
-    /*$.get('/api/getCloudinaryData', function (data) {
-        console.log(data);
-        var timeStampStr = 'timestamp='+data.time,
-            api_key = data.api_secret,
-            sha1String = timeStampStr + api_key;
-
-        var params = {
-            file: file
-        };
-
-        $.ajax({
-            url: cloudinaryImageUploadUrl + '?' + $.param(params),
-            type: 'POST',
-            data: JSON.stringify({
-                api_key: api_key,
-                timestamp: data.time,
-                signature: data.signature
-            })
-        }).done(function (data1) {
-            console.log(data1);
-        }).fail(function (err,err1,problem) {
-            console.log('Error:',problem);
-        })
-    });*/
 }
 
 /*
@@ -100,10 +116,26 @@ function identify(faceId) {
             maxNumOfCandidatesReturned: 1,
         })
     }).done(function (data) {
+
+    }).fail(failure);
+}
+// Need to parse personId from JSON response
+function createPerson(personName) {
+    var jsonObj;
+    $.ajax({
+        async: true,
+        url: uriBase + 'persongroups/' + personGroupId + '/persons',
+        type: 'POST',
+        data: JSON.stringify({
+            name: personName
+        }),
+
+    }).done(function (data) {
         // TODO: Retrieve the users personId and store it in database w/
         // the rest of his/her info. We need to make a post request to our server here
-        console.log(data);
-    }).fail(failure);
+        jsonObj = data;
+        return jsonObj;
+    })
 }
 
 /*
@@ -111,6 +143,20 @@ function identify(faceId) {
  personGroupId string
  personId string
  */
+
+function addFace(imgUrl, personId) {
+    $.ajax({
+        async: false,
+        url: uriBase + '/persongroups' + personGroupId + '/persons' + personId + '/persistedFaces',
+        beforeSend: beforeSend,
+        type: 'POST',
+        data: JSON.stringify({
+            url: imgUrl
+        })
+    })
+}
+
+
 function getPersonId(faceId) {
     var baseUri = uriBase;
     $.ajax({
@@ -123,10 +169,10 @@ function getPersonId(faceId) {
             maxNumOfCandidatesReturned: 1,
             confidenceThreshold: 0.5
         })
-    }).done(function(data) {
-        console.log(" Gocha"+data);
+    }).done(function (data) {
+        console.log(" Gocha" + data);
     })
-        .fail(function(jqXHR, textStatus, errorThrown) {
+        .fail(function (jqXHR, textStatus, errorThrown) {
             return null;
         });
 }
@@ -144,34 +190,16 @@ function getFaceId(api, faceUrl) {
         type: "POST",
         data: '{"url": ' + '"' + faceUrl + '"}'
     })
-        .done(function(data) {
+        .done(function (data) {
             console.log(data);
             faceid = data[0].faceId;
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
+        .fail(function (jqXHR, textStatus, errorThrown) {
             console.log("Failed", textStatus);
         });
     return faceid;
 }
 
-function createPerson(nameOfPerson) {
-    var api = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/persongroups/person_group/persons';
-
-    $.ajax({
-        async: false,
-        url: api,
-        beforeSend: beforeSend,
-        type: "POST",
-        data: JSON.stringify({
-            name: nameOfPerson
-        })
-    }).done(function(data) {
-        console.log(data);
-    })
-        .fail(function(errorThrown) {
-            console.log(errorThrown);
-        });
-}
 
 function beforeSend(xhrObj) {
     xhrObj.setRequestHeader("Content-Type", "application/json");
