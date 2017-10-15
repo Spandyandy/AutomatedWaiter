@@ -11,6 +11,8 @@
 |
 */
 
+use \App\User;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -20,11 +22,20 @@ Route::get('/blah', function () {
 });
 
 
-
 // API calls to our server
 // ---------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------
+
+Route::post('/api/createPerson', function(\Illuminate\Http\Request $request) {
+    $personId = $request->input('personId');
+    $name = $request->input('name');
+    $user = new User;
+    $user->name = $name;
+    $user->personId = $personId;
+    $user->numberOfVisits += 1;
+    $user->save();
+});
 
 Route::get('/api/getCloudinaryData', function () {
     $time = time();
