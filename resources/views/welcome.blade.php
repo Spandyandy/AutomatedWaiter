@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>WebcamJS Test Page</title>
     <style type="text/css">
@@ -10,17 +11,19 @@
         form > input { margin-right: 15px; }
         #results { float:right; margin:20px; padding:20px; border:1px solid; background:#ccc; }
     </style>
+
+    <script src="{{asset('js/api.js')}}"></script>
+    <script src="{{asset('js/main.js')}}"></script>
 </head>
 <body>
 <div id="results">Your captured image will appear here...</div>
 
-<h1>WebcamJS Test Page</h1>
-<h3>Demonstrates simple 320x240 capture &amp; display</h3>
+<h1>Image Capture Test Page</h1>
 
 <div id="my_camera"></div>
 
 <!-- First, include the Webcam.js JavaScript Library -->
-<script type="text/javascript" src="{{public_path('js/webcam.js')}}"></script>
+<script type="text/javascript" src="{{asset('js/webcam.js')}}"></script>
 
 <!-- Configure a few settings and attach camera -->
 <script language="JavaScript">
@@ -28,27 +31,46 @@
         width: 320,
         height: 240,
         image_format: 'jpeg',
-        jpeg_quality: 90
+        jpeg_quality: 100
     });
     Webcam.attach( '#my_camera' );
 </script>
 
-<!-- A button for taking snaps -->
-<form>
-    <input type=button value="Take Snapshot" onClick="take_snapshot()">
-</form>
 
 <!-- Code to handle taking the snapshot and displaying it locally -->
 <script language="JavaScript">
-    function take_snapshot() {
-        // take snapshot and get image data
-        Webcam.snap( function(data_uri) {
-            // display results in page
-            document.getElementById('results').innerHTML =
-                '<h2>Here is your image:</h2>' +
-                '<img src="'+data_uri+'"/>';
-        } );
-    }
+
+    var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
+    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
+
+        var myInterval = setInterval(function(){
+            var faceID, switch_var;
+            // take snapshot and get image data
+            Webcam.snap(function (data_uri) {
+                // call detect from api on image
+                faceID = getFaceIdByImage('detect', data_uri);
+            });
+
+            if(faceID == null){
+                switch_var = 0;
+            }
+            else if(identify(faceID)){
+                switch_var = 1;
+            }
+            else{
+                switch_var = 2;
+            }
+
+            switch(switch_var) {
+                case 0: // No person, resume taking pix every 5 seconds
+
+                case 1: // Person found but already in database
+
+                case 2: // Person found, no recorded entry
+
+            }
+        }, 5000);
+
 </script>
 
 </body>
