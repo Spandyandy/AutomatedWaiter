@@ -21,6 +21,10 @@ Route::get('/blah', function () {
     return view('iamawesome');
 });
 
+<<<<<<< HEAD
+Route::get('/get/Image', function () {
+=======
+>>>>>>> 90710d6bc5e7b03a93cc690617ad81e35dfed161
 
 // API calls to our server
 // ---------------------------------------------------------------------------------------------------------

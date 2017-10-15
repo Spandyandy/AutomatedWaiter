@@ -7,8 +7,97 @@
 </head>
 <body>
 
+<<<<<<< HEAD
+<script type="text/javascript">
+    var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
+    var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
+    var imageUrl = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg";
+
+
+    function processImage() {
+        var faceId = getFaceId('detect', imageUrl);
+        //var personId = getPersonId('identify',faceId);
+        console.log(faceId)
+        /*if(!personId) {
+            // Ask person for there name ....
+            var name = "Obama";
+            var personData = createPerson(name);
+            console.log("Final: " + personData);
+        }*/
+    }
+
+    /*function getPersonId(api, faceId) {
+        var baseUri = uriBase + api;
+        $.ajax({
+            async: false,
+            url: baseUri,
+            beforeSend: function(xhrObj) {
+                xhrObj.setRequestHeader("Content-Type", "application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+            },
+            type: "POST",
+            data: JSON.stringify({
+                faceIds: [faceId],
+                personGroupId: "person_group"
+            })
+        }).done(function(data) {
+            console.log(" Gocha"+data);
+        })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                return null;
+            });
+    }*/
+
+    function getFaceId(api, faceUrl) {
+        var baseUri = uriBase + api;
+        var params = {
+            returnFaceId: "true"
+        };
+        var faceid = -1;
+        $.ajax({
+            url: baseUri + "?" + $.param(params),
+            beforeSend: function(xhrObj){
+                xhrObj.setRequestHeader("Content-Type","application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+            },
+            type: "POST",
+            data: '{"url": ' + '"' + faceUrl + '"}'
+        })
+            .done(function(data) {
+                faceid = $.parseJSON('{');
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("Failed", textStatus);
+            });
+            return faceid;
+    }
+
+    function createPerson(nameOfPerson) {
+        var api = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/persongroups/person_group/persons';
+
+        $.ajax({
+            async: false,
+            url: api,
+            beforeSend: function(xhrObj){
+                xhrObj.setRequestHeader("Content-Type","application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+            },
+            type: "POST",
+            data: JSON.stringify({
+                name: nameOfPerson
+            })
+        }).done(function(data) {
+                console.log(data);
+            })
+            .fail(function(errorThrown) {
+                console.log(errorThrown);
+            });
+    }
+</script>
+=======
 <script src="{{asset('js/api.js')}}"></script>
 <script src="{{asset('js/main.js')}}"></script>
+>>>>>>> 2a7218cb15df7efc6830bd5f967ac482f552ee73
 
 <h1>Detect Faces:</h1>
 Enter the URL to an image that includes a face or faces, then click the <strong>Analyze face</strong> button.
