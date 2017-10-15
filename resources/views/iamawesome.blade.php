@@ -10,32 +10,21 @@
     var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
     var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
     var imageUrl = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg";
-    var personGroupId = "person_group";
+
+
     function processImage() {
-        var faceId = getFaceId('detect', imageUrl),
-            faceIds = [];
-        console.log(faceId);
-        if(faceId === null) {
-            // bad stuff with api call
-        } else {
-            faceIds.push(faceId);
-        }
-        var personId = null,
-            personData = null;
-        //todo Call API to check if we have seen this person
-        personId = getPersonId('identify',faceId);
-        if(!personId) {
+        var faceId = getFaceId('detect', imageUrl);
+        //var personId = getPersonId('identify',faceId);
+        console.log(faceId)
+        /*if(!personId) {
             // Ask person for there name ....
             var name = "Obama";
             var personData = createPerson(name);
             console.log("Final: " + personData);
-        }
-        else {
-
-        }
+        }*/
     }
 
-    function getPersonId(api, faceId) {
+    /*function getPersonId(api, faceId) {
         var baseUri = uriBase + api;
         $.ajax({
             async: false,
@@ -47,8 +36,7 @@
             type: "POST",
             data: JSON.stringify({
                 faceIds: [faceId],
-                maxNumOfCandidatesReturned: 1,
-                confidenceThreshold: 0.5
+                personGroupId: "person_group"
             })
         }).done(function(data) {
             console.log(" Gocha"+data);
@@ -56,7 +44,7 @@
             .fail(function(jqXHR, textStatus, errorThrown) {
                 return null;
             });
-    }
+    }*/
 
     function getFaceId(api, faceUrl) {
         var baseUri = uriBase + api;
@@ -65,7 +53,6 @@
         };
         var faceid = -1;
         $.ajax({
-            async: false,
             url: baseUri + "?" + $.param(params),
             beforeSend: function(xhrObj){
                 xhrObj.setRequestHeader("Content-Type","application/json");
@@ -75,8 +62,7 @@
             data: '{"url": ' + '"' + faceUrl + '"}'
         })
             .done(function(data) {
-                console.log(data);
-                faceid = data[0].faceId;
+                faceid = $.parseJSON('{');
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
                 console.log("Failed", textStatus);
