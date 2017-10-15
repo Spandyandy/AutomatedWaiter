@@ -18,7 +18,7 @@ $factory->define(App\User::class, function (Faker $faker) {
 
     return [
         'name' => "Leonardo Di Caprio",
-        'phoneNumber' => $faker->phoneNumber,
+        'phonenumber' => $faker->phoneNumber,
         'lastVisited' => $faker->dateTimeThisMonth(),
         'numberOfVisits' => 1
     ];

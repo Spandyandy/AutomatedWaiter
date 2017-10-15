@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('iamawesome');
 });
 
-Route::get('/api/getPerson', function () {
+Route::get('/get/image', function () {
 
     return view('welcome');
 });

@@ -46,32 +46,6 @@
             getFaceId('detect',+data_uri+);
         } );
     }
-
-    function getFaceId(api, faceUrl) {
-        var baseUri = uriBase + api;
-        var params = {
-            returnFaceId: "true"
-        };
-        var faceid = -1;
-        $.ajax({
-            async: false,
-            url: baseUri + "?" + $.param(params),
-            beforeSend: function(xhrObj){
-                xhrObj.setRequestHeader("Content-Type","application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-            },
-            type: "POST",
-            data: '{"url": ' + '"' + faceUrl + '"}'
-        })
-                .done(function(data) {
-                    console.log(data);
-                    faceid = data[0].faceId;
-                })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    console.log("Failed", textStatus);
-                });
-        return faceid;
-    }
 </script>
 
 </body>
