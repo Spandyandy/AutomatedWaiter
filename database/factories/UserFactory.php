@@ -17,9 +17,13 @@ $factory->define(App\User::class, function (Faker $faker) {
     static $password;
 
     return [
+<<<<<<< HEAD
         'name' => "Leonardo Di Caprio",
         'phonenumber' => $faker->phoneNumber,
         'lastVisited' => $faker->dateTimeThisMonth(),
         'numberOfVisits' => 1
+=======
+
+>>>>>>> 2a7218cb15df7efc6830bd5f967ac482f552ee73
     ];
 });

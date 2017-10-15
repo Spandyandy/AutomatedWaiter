@@ -39,13 +39,34 @@
     var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
     var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
 
-    function take_snapshot() {
-        // take snapshot and get image data
-        Webcam.snap( function(data_uri) {
-            // call detect from api on image
-            getFaceId('detect',+data_uri+);
-        } );
-    }
+        var myInterval = setInterval(function(){
+            var faceID, switch_var;
+            // take snapshot and get image data
+            Webcam.snap(function (data_uri) {
+                // call detect from api on image
+                faceID = getFaceIdByImage('detect', data_uri);
+            });
+
+            if(faceID == null){
+                switch_var = 0;
+            }
+            else if(identify(faceID)){
+                switch_var = 1;
+            }
+            else{
+                switch_var = 2;
+            }
+
+            switch(switch_var) {
+                case 0: // No person, resume taking pix every 5 seconds
+
+                case 1: // Person found but already in database
+
+                case 2: // Person found, no recorded entry
+
+            }
+        }, 5000);
+
 </script>
 
 </body>
