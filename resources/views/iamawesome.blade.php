@@ -6,6 +6,7 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <script type="text/javascript">
     var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
     var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
@@ -92,6 +93,10 @@
             });
     }
 </script>
+=======
+<script src="{{asset('js/api.js')}}"></script>
+<script src="{{asset('js/main.js')}}"></script>
+>>>>>>> 2a7218cb15df7efc6830bd5f967ac482f552ee73
 
 <h1>Detect Faces:</h1>
 Enter the URL to an image that includes a face or faces, then click the <strong>Analyze face</strong> button.
