@@ -39,5 +39,12 @@ Route::get('/api/getCloudinaryData', function () {
 Route::post('/api/sendImage', function(\Illuminate\Http\Request $request) {
     $url = $request->input('url');
     \Log::info($request);
-    \Cloudinary\Uploader::upload($url);
+    $res = \Cloudinary\Uploader::upload($url,[
+        'api_key' => '925295814447944',
+        'api_secret' => 'AJoXAW5yAwGh1fYy8LVr7eooQ8A',
+        'cloud_name' => 'drauibq1c'
+    ]);
+    return response()->json([
+        'url' => $res['secure_url']
+    ]);
 });
