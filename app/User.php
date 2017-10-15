@@ -18,6 +18,8 @@ class User extends Authenticatable
         'name', 'numberOfVisits'
     ];
 
+    public $primarykey = 'personId';
+
     /**
      * The attributes that should be hidden for arrays.
      *

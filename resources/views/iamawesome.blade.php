@@ -7,12 +7,15 @@
 </head>
 <body>
 
-<<<<<<< HEAD
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+<script src="{{asset("js/BingSpeech.js")}}"></script>
+<script src="{{asset("js/Sample.js")}}"></script>
+<script src="{{asset("js/speech.browser.sdk.js")}}"></script>
+
 <script type="text/javascript">
     var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
     var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
     var imageUrl = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg";
-
 
     function processImage() {
         var faceId = getFaceId('detect', imageUrl);

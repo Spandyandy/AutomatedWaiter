@@ -30,9 +30,15 @@
         }
     </style>
 
+    <script type="text/javascript" src="{{asset('js/webcam.js')}}"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="{{asset('js/api.js')}}"></script>
     <script src="{{asset('js/main.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+    <script src="{{asset("js/BingSpeech.js")}}"></script>
+    <script src="{{asset("js/speech.browser.sdk.js")}}"></script>
+    <script src="{{asset('js/Sample.js')}}"></script>
+
 
 </head>
 <body>
@@ -43,7 +49,6 @@
 <div id="my_camera"></div>
 
 <!-- First, include the Webcam.js JavaScript Library -->
-<script type="text/javascript" src="{{asset('js/webcam.js')}}"></script>
 
 <!-- Configure a few settings and attach camera -->
 <script language="JavaScript">
@@ -56,51 +61,37 @@
     Webcam.attach('#my_camera');
 </script>
 
-<button onclick="stopInterval()">Stop your automated waiter</button>
-<button onclick="startInterval()">Start your automated waiter</button>
+<button onclick="stopInterval()" id="stop">Stop your automated waiter</button>
+<button onclick="startInterval()" id="start">Start your automated waiter</button>
 <!-- Code to handle taking the snapshot and displaying it locally -->
 <script language="JavaScript">
     var isInterval = false;
+    var seconds = 5;
     var myInterval = null;
 
+    // TODO: onDetectFace, stop the camera and prompt user
     var stopInterval = function () {
         clearInterval(myInterval);
     };
+
     var startInterval = function () {
         myInterval = setInterval(function () {
-            var faceID, switch_var;
-            // take snapshot and get image data
             Webcam.snap(function (data_uri) {
                 var cloudUrl = uploadToCloudinary(data_uri);
                 var faceId = getFaceIdByImage(cloudUrl);
                 var personId = identify(faceId);
+                alert(personId);
                 if(personId === null) {
+                    prompt('Welcome new customer to our restaurant. Please tell us your name.');
+                    returnValue();
                     // Prompt user for their name
-                    var name = "my name";
+                    var name = getName();
                     createPerson(name)
                 }
 
             });
 
-            if (faceID == null) {
-                switch_var = 0;
-            }
-            else if (identify(faceID)) {
-                switch_var = 1;
-            }
-            else {
-                switch_var = 2;
-            }
-
-            switch (switch_var) {
-                case 0: // No person, resume taking pix every 5 seconds
-
-                case 1: // Person found but already in database
-
-                case 2: // Person found, no recorded entry
-
-            }
-        }, 5000);
+        }, 1000 * seconds);
     };
     var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
     var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";

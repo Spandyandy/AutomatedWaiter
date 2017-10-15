@@ -2,10 +2,13 @@
 var bingClientTTS = new BingSpeech.TTSClient("1f09e238de7842b685c4d4a303ee58f9");
 
 function prompt(message){
+    startMic();
     bingClientTTS.synthesize(message);
+    stopMic();
 }
 
-var startBtn, stopBtn, hypothesisDiv, phraseDiv, statusDiv;
+var startBtn = document.getElementById('start'), stopBtn = document.getElementById('stop'),
+    hypothesisDiv, phraseDiv, statusDiv;
 var key, formatOptions, recognitionMode, inputSource, filePicker;
 var SDK;
 var recognizer;
@@ -37,7 +40,8 @@ function RecognizerSetup(SDK, recognitionMode, language, format, subscriptionKey
         return SDK.CreateRecognizerWithFileAudioSource(recognizerConfig, authentication, files[0]);
     }
 }
-startBtn.addEventListener("click", function () {
+
+function startMic() {
     if (!recognizer || previousSubscriptionKey != '1f09e238de7842b685c4d4a303ee58f9') {
         previousSubscriptionKey = '1f09e238de7842b685c4d4a303ee58f9';
         Setup();
@@ -50,10 +54,13 @@ startBtn.addEventListener("click", function () {
     stopBtn.disabled = false;
 });
 
-stopBtn.addEventListener("click", function () {
+
+
+function stopMic() {
     RecognizerStop(SDK, recognizer);
     stopBtn.disabled = true;
-});
+}
+
 
 Initialize(function (speechSdk) {
     SDK = speechSdk;
@@ -62,7 +69,7 @@ Initialize(function (speechSdk) {
 
 // Start the recognition
 function RecognizerStart(SDK, recognizer) {
-    recognizer.Recognize((event) => {
+    recognizer.Recognize(function(event) {
         switch (event.Name) {
     case "RecognitionTriggeredEvent" :
         UpdateStatus("Initializing");
@@ -106,10 +113,10 @@ function RecognizerStart(SDK, recognizer) {
         console.log(JSON.stringify(event));
     }
 })
-.On(() => {
+.On(function() {
         // The request succeeded. Nothing to do here.
     },
-        (error) => {
+    function(error) {
         console.error(error);
     });
 }

@@ -2,11 +2,11 @@ var subscriptionKey = "33ae7357b50b4045a712bc8c56d1f600";
 var uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
 var imageUrl = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg";
 var personGroupId = "automated-waiter-group-id";
-var cloudinaryName = 'drauibq1c',
-    cloudinaryImageUploadUrl = 'https://api.cloudinary.com/v1_1/' + cloudinaryName + '/image/upload',
-    cloudinaryUploadKey = '925295814447944';
 
 var textAnalyticsApiUrl = 'https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases';
+
+var speechApiKey = '1f09e238de7842b685c4d4a303ee58f9';
+var textAnalyticsKey = '97c769d3aef44118a9888e6cb880b8a2';
 
 //training URL's
 var grelda = "Grelda";
@@ -111,7 +111,7 @@ function getFaceIdByImage(faceUrl) {
         })
     }).done(function (data) {
         console.log(data);
-        faceId = data.faceId;
+        faceId = data[0].faceId;
     }).fail(failure);
     return faceId;
 }
@@ -139,7 +139,7 @@ function identify(faceId) {
         })
     }).done(function (data) {
         console.log(data);
-        personId = data.personId;
+        // personId = data[0].personId;
     }).fail(failure);
     return personId;
 }

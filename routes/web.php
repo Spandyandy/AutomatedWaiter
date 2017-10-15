@@ -21,17 +21,17 @@ Route::get('/blah', function () {
     return view('iamawesome');
 });
 
-<<<<<<< HEAD
-Route::get('/get/Image', function () {
-=======
->>>>>>> 90710d6bc5e7b03a93cc690617ad81e35dfed161
-
 // API calls to our server
 // ---------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------
 
-Route::post('/api/createPerson', function(\Illuminate\Http\Request $request) {
+Route::get('/api/person/{personId}', function($personId) {
+    $user = User::find($personId);
+    return $user;
+});
+
+Route::post('/api/person', function(\Illuminate\Http\Request $request) {
     $personId = $request->input('personId');
     $name = $request->input('name');
     $user = new User;
