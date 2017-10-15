@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>WebcamJS Test Page</title>
     <style type="text/css">
@@ -10,6 +11,9 @@
         form > input { margin-right: 15px; }
         #results { float:right; margin:20px; padding:20px; border:1px solid; background:#ccc; }
     </style>
+
+    <script src="{{asset('js/api.js')}}"></script>
+    <script src="{{asset('js/main.js')}}"></script>
 </head>
 <body>
 <div id="results">Your captured image will appear here...</div>

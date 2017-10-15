@@ -59,7 +59,9 @@ function trainPersonGroup(personGroupId) {
  // https://api.cloudinary.com/v1_1/<cloud name>/<resource_type>/upload
  */
 function uploadToCloudinary(file) {
+    var url = null;
     $.ajax({
+        async: false,
         url: '/api/sendImage',
         type: 'POST',
         data: {
@@ -70,18 +72,21 @@ function uploadToCloudinary(file) {
         },
         dataType: 'json'
     }).done(function (data) {
-        console.log(data.url)
-    })
+        url = data.url;
+    });
+    return url;
 }
 
 /*
  https://[location].api.cognitive.microsoft.com/face/v1.0/detect[?returnFaceId][&returnFaceLandmarks][&returnFaceAttributes]
  */
 function getFaceIdByImage(faceUrl) {
+    var faceId = null;
     var params = {
         returnFaceId: 'true'
     };
     $.ajax({
+        async: false,
         crossDomain: true,
         url: uriBase + 'detect/' + '?' + $.param(params),
         beforeSend: beforeSend,
@@ -90,8 +95,10 @@ function getFaceIdByImage(faceUrl) {
             url: faceUrl
         })
     }).done(function (data) {
-
+        console.log(data);
+        faceId = data.faceId;
     }).fail(failure);
+    return faceId;
 }
 
 /*

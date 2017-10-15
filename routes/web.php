@@ -12,11 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('iamawesome');
+    return view('welcome');
 });
 
-Route::get('/welcome', function () {
-    return view('welcome');
+Route::get('/blah', function () {
+    return view('iamawesome');
 });
 
 
